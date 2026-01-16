@@ -7,6 +7,7 @@ Usage:
 """
 from __future__ import annotations
 from .config import load_config, ensure_dirs
+from .collect import collect_sources
 import argparse
 import sys
 from . import __app_name__, __version__
@@ -49,6 +50,26 @@ def main(argv: list[str] | None = None) -> int:
             print(f"  {k}: {v}")
         print("Pipeline steps will be added next.")
         return 0
+
+    if args.command == "collect":
+        cfg = load_config()
+        ensure_dirs(cfg)
+        data = collect_sources(cfg["sources"])
+        if not data:
+            print("No logs collected. Check 'sources' in config.")
+            return 0
+        for name, lines in data.items():
+            print(f"{name}: {len(lines)} lines")
+        return 0
+
+    if args.command == "run":
+        cfg = load_config()
+        ensure_dirs(cfg)
+        data = collect_sources(cfg["sources"])
+        print(f"Collected from {len(data)} sources.")
+        print("Next: normalization (next branch).")
+        return 0
+
 
     # Stubs for now
     print(f"Command '{args.command}' not implemented yet. Coming soon.")
