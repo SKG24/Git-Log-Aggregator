@@ -1,0 +1,23 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+MAX_SIZE=$((10 * 1024 * 1024))
+
+# Reject large files (except logs)
+git diff --cached --name-only | while read -r file; do
+  if [[ -f "$file" ]]; then
+    size=$(wc -c <"$file")
+    if (( size > MAX_SIZE )) && [[ "$file" != data/logs/* ]]; then
+      echo "❌ $file is larger than 10MB."
+      exit 1
+    fi
+  fi
+done
+
+# Validate log timestamps
+git diff --cached --name-only | grep '^data/logs/' | while read -r log; do
+  if ! grep -Eq '^[0-9]{4}-[0-9]{2}-[0-9]{2}' "$log"; then
+    echo "❌ Invalid timestamp format in $log"
+    exit 1
+  fi
+done

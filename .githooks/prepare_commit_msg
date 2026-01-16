@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+TEMPLATE=".hooks-config/commit_msg_template.txt"
+MSG_FILE="$1"
+
+if [[ -f "$TEMPLATE" ]]; then
+  cat "$TEMPLATE" "$MSG_FILE" > "$MSG_FILE.tmp"
+  mv "$MSG_FILE.tmp" "$MSG_FILE"
+fi

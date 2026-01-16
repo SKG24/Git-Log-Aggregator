@@ -1,0 +1,20 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+DATE=$(date +%F)
+OUT="data/reports/summary-${DATE}.txt"
+
+mkdir -p data/reports
+
+echo "$DATE Summary" > "$OUT"
+
+for log in data/logs/**/*.log data/logs/*.log 2>/dev/null; do
+  [[ -f "$log" ]] || continue
+  ERRORS=$(grep -c "ERROR" "$log" || true)
+  WARNINGS=$(grep -c "WARN" "$log" || true)
+  INFOS=$(grep -c "INFO" "$log" || true)
+  echo "$(basename "$log"): $ERRORS errors, $WARNINGS warnings, $INFOS info" >> "$OUT"
+done
+
+git add "$OUT"
+git commit -m "report: auto-generate log summary for ${DATE}" || true

@@ -1,0 +1,7 @@
+<type>(<scope>): <short summary>
+
+Why:
+- Explanation
+
+Notes:
+- Side effects or follow-ups
