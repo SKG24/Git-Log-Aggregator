@@ -10,6 +10,8 @@ from .config import load_config, ensure_dirs
 from .collect import collect_sources
 from .normalize import normalize_lines
 from .store import store_normalized
+from pathlib import Path
+from .analyze import analyze_files, write_summary
 import argparse
 import sys
 from . import __app_name__, __version__
@@ -83,6 +85,19 @@ def main(argv: list[str] | None = None) -> int:
         if not written:
             print("No normalized logs written.")
         return 0
+        
+    if args.command == "analyze":
+        cfg = load_config()
+        ensure_dirs(cfg)
+        # analyze all logs in output_dir
+        files = list(Path(cfg["output_dir"]).glob("*.log"))
+        if not files:
+            print("No log files found to analyze. Run 'store' or 'run' first.")
+            return 0
+        summary = analyze_files(files)
+        out = write_summary(cfg["report_dir"], summary)
+        print(f"Wrote summary: {out}")
+        return 0
 
     if args.command == "run":
         cfg = load_config()
@@ -90,8 +105,13 @@ def main(argv: list[str] | None = None) -> int:
         data = collect_sources(cfg["sources"])
         normalized = {n: normalize_lines(v, cfg["timezone"], cfg["normalize_timestamp"]) for n, v in data.items()}
         written = store_normalized(normalized, cfg["output_dir"])
-        print(f"Stored {len(written)} file(s). Next: analyze (next branch).")
+        files = list(Path(cfg["output_dir"]).glob("*.log"))
+        summary = analyze_files(files)
+        out = write_summary(cfg["report_dir"], summary)
+        print(f"Pipeline complete. Stored {len(written)} files. Summary: {out}")
+        # commit option wired in next branch
         return 0
+
 
     # Stubs for now
     print(f"Command '{args.command}' not implemented yet. Coming soon.")
