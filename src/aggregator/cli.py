@@ -5,8 +5,8 @@ CLI entrypoint for Git-Based Log Aggregator.
 Usage:
   python -m aggregator --help
 """
-from .config import load_config, ensure_dir
 from __future__ import annotations
+from .config import load_config, ensure_dirs
 import argparse
 import sys
 from . import __app_name__, __version__
@@ -40,14 +40,7 @@ def main(argv: list[str] | None = None) -> int:
     if not args.command:
         parser.print_help()
         return 0
-
-    # Stubs for now
-    print(f"Command '{args.command}' not implemented yet. Coming soon.")
-    return 0
-
-if __name__ == "__main__":
-    raise SystemExit(main())
-
+    
     if args.command == "run":
         cfg = load_config()
         ensure_dirs(cfg)
@@ -56,4 +49,11 @@ if __name__ == "__main__":
             print(f"  {k}: {v}")
         print("Pipeline steps will be added next.")
         return 0
+
+    # Stubs for now
+    print(f"Command '{args.command}' not implemented yet. Coming soon.")
+    return 0
+
+if __name__ == "__main__":
+    raise SystemExit(main())
 
