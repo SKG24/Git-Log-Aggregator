@@ -1,0 +1,15 @@
+name: CI
+
+on:
+  push: {}
+  pull_request: {}
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Verify hooks exist
+        run: |
+          test -f .githooks/pre-commit
+          test -f .githooks/post-commit
