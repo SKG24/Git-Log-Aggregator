@@ -9,6 +9,7 @@ from __future__ import annotations
 from .config import load_config, ensure_dirs
 from .collect import collect_sources
 from .normalize import normalize_lines
+from .store import store_normalized
 import argparse
 import sys
 from . import __app_name__, __version__
@@ -70,16 +71,27 @@ def main(argv: list[str] | None = None) -> int:
             print("No lines to normalize.")
         return 0
 
+    if args.command == "store":
+        cfg = load_config()
+        ensure_dirs(cfg)
+        data = collect_sources(cfg["sources"])
+        normalized = {name: normalize_lines(lines, cfg["timezone"], cfg["normalize_timestamp"])
+                      for name, lines in data.items()}
+        written = store_normalized(normalized, cfg["output_dir"])
+        for p in written:
+            print(f"Wrote: {p}")
+        if not written:
+            print("No normalized logs written.")
+        return 0
+
     if args.command == "run":
         cfg = load_config()
         ensure_dirs(cfg)
         data = collect_sources(cfg["sources"])
-        norm_count = sum(len(normalize_lines(v, cfg["timezone"], cfg["normalize_timestamp"])) for v in data.values())
-        print(f"Collected {sum(len(v) for v in data.values())} lines, normalized {norm_count}.")
-        print("Next: store (next branch).")
+        normalized = {n: normalize_lines(v, cfg["timezone"], cfg["normalize_timestamp"]) for n, v in data.items()}
+        written = store_normalized(normalized, cfg["output_dir"])
+        print(f"Stored {len(written)} file(s). Next: analyze (next branch).")
         return 0
-
-
 
     # Stubs for now
     print(f"Command '{args.command}' not implemented yet. Coming soon.")
