@@ -10,3 +10,5 @@ config/aggregator.override.json
 # OS
 .DS_Store
 Thumbs.db
+
+config/aggregator.override.json
