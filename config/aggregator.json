@@ -1,0 +1,10 @@
+{
+  "sources": [
+    "C:\\\\Users\\\\Sanat.Gupta\\\\logs"
+  ],
+  "normalize_timestamp": "UTC",
+  "commit_message_format": "logs: add {date} aggregated logs",
+  "output_dir": "data/logs",
+  "report_dir": "data/reports",
+  "timezone": "Asia/Kolkata"
+}
