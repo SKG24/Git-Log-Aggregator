@@ -43,4 +43,3 @@ def load_config(root: Path | None = None) -> Dict[str, Any]:
 def ensure_dirs(cfg: Dict[str, Any]) -> None:
     Path(cfg["output_dir"]).mkdir(parents=True, exist_ok=True)
     Path(cfg["report_dir"]).mkdir(parents=True, exist_ok=True)
-``
