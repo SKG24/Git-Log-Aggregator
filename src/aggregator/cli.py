@@ -8,6 +8,7 @@ Usage:
 from __future__ import annotations
 from .config import load_config, ensure_dirs
 from .collect import collect_sources
+from .normalize import normalize_lines
 import argparse
 import sys
 from . import __app_name__, __version__
@@ -41,16 +42,7 @@ def main(argv: list[str] | None = None) -> int:
     if not args.command:
         parser.print_help()
         return 0
-    
-    if args.command == "run":
-        cfg = load_config()
-        ensure_dirs(cfg)
-        print("Loaded config:")
-        for k, v in cfg.items():
-            print(f"  {k}: {v}")
-        print("Pipeline steps will be added next.")
-        return 0
-
+        
     if args.command == "collect":
         cfg = load_config()
         ensure_dirs(cfg)
@@ -62,13 +54,31 @@ def main(argv: list[str] | None = None) -> int:
             print(f"{name}: {len(lines)} lines")
         return 0
 
+    if args.command == "normalize":
+        cfg = load_config()
+        ensure_dirs(cfg)
+        data = collect_sources(cfg["sources"])
+        total = 0
+        for name, lines in data.items():
+            norm = normalize_lines(lines, local_tz=cfg["timezone"], normalize_mode=cfg["normalize_timestamp"])
+            print(f"{name}: {len(norm)} normalized lines")
+            # show first 3 as a preview
+            for sample in norm[:3]:
+                print("  ", sample)
+            total += len(norm)
+        if total == 0:
+            print("No lines to normalize.")
+        return 0
+
     if args.command == "run":
         cfg = load_config()
         ensure_dirs(cfg)
         data = collect_sources(cfg["sources"])
-        print(f"Collected from {len(data)} sources.")
-        print("Next: normalization (next branch).")
+        norm_count = sum(len(normalize_lines(v, cfg["timezone"], cfg["normalize_timestamp"])) for v in data.values())
+        print(f"Collected {sum(len(v) for v in data.values())} lines, normalized {norm_count}.")
+        print("Next: store (next branch).")
         return 0
+
 
 
     # Stubs for now
