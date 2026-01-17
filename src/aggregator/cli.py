@@ -12,6 +12,7 @@ from .normalize import normalize_lines
 from .store import store_normalized
 from pathlib import Path
 from .analyze import analyze_files, write_summary
+from .gitops import stage_and_commit
 import argparse
 import sys
 from . import __app_name__, __version__
@@ -85,7 +86,7 @@ def main(argv: list[str] | None = None) -> int:
         if not written:
             print("No normalized logs written.")
         return 0
-        
+
     if args.command == "analyze":
         cfg = load_config()
         ensure_dirs(cfg)
@@ -108,7 +109,15 @@ def main(argv: list[str] | None = None) -> int:
         files = list(Path(cfg["output_dir"]).glob("*.log"))
         summary = analyze_files(files)
         out = write_summary(cfg["report_dir"], summary)
-        print(f"Pipeline complete. Stored {len(written)} files. Summary: {out}")
+        
+    print(f"Pipeline complete. Stored {len(written)} files. Summary: {out}")
+            if getattr(args, "commit", False):
+                add_rc, commit_rc = stage_and_commit([*written, out], cfg["commit_message_format"].format(date=str(out).split("summary-")[-1].split(".txt")[0]))
+                if commit_rc == 0:
+                    print("Changes committed to git.")
+                else:
+                    print("Warning: git commit failed. Ensure you're in a git repo and have user.name/user.email set.")
+
         # commit option wired in next branch
         return 0
 
