@@ -1,11 +1,11 @@
 
 from __future__ import annotations
-from datetime import datetime
+from datetime import datetime, timezone
 from pathlib import Path
 from typing import Dict, List
 
 def _today_ymd() -> str:
-    return datetime.utcnow().strftime("%Y-%m-%d")
+    return datetime.now(timezone.utc).strftime("%Y-%m-%d")
 
 def _safe_name(name: str) -> str:
     return "".join(ch if ch.isalnum() or ch in "-_" else "_" for ch in name)

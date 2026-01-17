@@ -40,7 +40,11 @@ def load_config(root: Path | None = None) -> Dict[str, Any]:
 
     return merged
 
-def ensure_dirs(cfg: Dict[str, Any]) -> None:
+def ensure_dirs(cfg: Dict[str, Any], root: Path | None = None) -> None:
     root = root or Path.cwd()
-    Path(cfg["output_dir"]).mkdir(parents=True, exist_ok=True)
-    Path(cfg["report_dir"]).mkdir(parents=True, exist_ok=True)
+
+    output_dir = root / cfg["output_dir"]
+    report_dir = root / cfg["report_dir"]
+
+    output_dir.mkdir(parents=True, exist_ok=True)
+    report_dir.mkdir(parents=True, exist_ok=True)

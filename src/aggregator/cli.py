@@ -40,7 +40,7 @@ def build_parser() -> argparse.ArgumentParser:
 
     run_p = sub.add_parser(
         "run",
-        help="Run full pipeline (collect → normalize → store → analyze).",
+        help="Run full pipeline (collect -> normalize -> store -> analyze).",
     )
     run_p.add_argument(
         "--commit",
