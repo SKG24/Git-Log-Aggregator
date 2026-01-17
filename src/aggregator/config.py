@@ -41,5 +41,6 @@ def load_config(root: Path | None = None) -> Dict[str, Any]:
     return merged
 
 def ensure_dirs(cfg: Dict[str, Any]) -> None:
+    root = root or Path.cwd()
     Path(cfg["output_dir"]).mkdir(parents=True, exist_ok=True)
     Path(cfg["report_dir"]).mkdir(parents=True, exist_ok=True)

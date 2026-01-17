@@ -18,6 +18,6 @@ def test_ensure_dirs(tmp_path: Path):
         encoding="utf-8"
     )
     cfg = load_config(tmp_path)
-    ensure_dirs(cfg)
+    ensure_dirs(cfg, tmp_path)
     assert (tmp_path / "data" / "logs").exists()
     assert (tmp_path / "data" / "reports").exists()
