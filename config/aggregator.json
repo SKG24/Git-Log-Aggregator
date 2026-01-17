@@ -1,6 +1,6 @@
 {
   "sources": [
-    "C:\\\\Users\\\\Sanat.Gupta\\\\logs"
+    "C:\\\\Users\\\\Sanat.Gupta\\\\logs\\\\*.log"
   ],
   "normalize_timestamp": "UTC",
   "commit_message_format": "logs: add {date} aggregated logs",
