@@ -104,22 +104,26 @@ def main(argv: list[str] | None = None) -> int:
         cfg = load_config()
         ensure_dirs(cfg)
         data = collect_sources(cfg["sources"])
+        if not data:
+            print("No data collected. Check 'sources' in config.")
+            return 0
         normalized = {n: normalize_lines(v, cfg["timezone"], cfg["normalize_timestamp"]) for n, v in data.items()}
         written = store_normalized(normalized, cfg["output_dir"])
         files = list(Path(cfg["output_dir"]).glob("*.log"))
         summary = analyze_files(files)
         out = write_summary(cfg["report_dir"], summary)
-        
-    print(f"Pipeline complete. Stored {len(written)} files. Summary: {out}")
-            if getattr(args, "commit", False):
-                add_rc, commit_rc = stage_and_commit([*written, out], cfg["commit_message_format"].format(date=str(out).split("summary-")[-1].split(".txt")[0]))
-                if commit_rc == 0:
-                    print("Changes committed to git.")
-                else:
-                    print("Warning: git commit failed. Ensure you're in a git repo and have user.name/user.email set.")
-
-        # commit option wired in next branch
+        print(f"Pipeline complete. Stored {len(written)} file(s). Summary at: {out}")
+        if getattr(args, "commit", False):
+            msg = cfg["commit_message_format"].format(
+                date=str(out.name).replace("summary-", "").replace(".txt", "")
+            )
+            add_rc, commit_rc = stage_and_commit([*written, out], msg)
+            if commit_rc == 0:
+                print(f"Committed with message: {msg}")
+            else:
+                print("Warning: git commit failed. Configure git or check repo status.")
         return 0
+
 
 
     # Stubs for now
