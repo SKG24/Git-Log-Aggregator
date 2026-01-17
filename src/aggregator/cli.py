@@ -124,8 +124,6 @@ def main(argv: list[str] | None = None) -> int:
                 print("Warning: git commit failed. Configure git or check repo status.")
         return 0
 
-
-
     # Stubs for now
     print(f"Command '{args.command}' not implemented yet. Coming soon.")
     return 0
