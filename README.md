@@ -140,22 +140,15 @@ This will:
 4. Generate summary report
 5. Commit outputs to Git (optional)
 
-## Git WOrkflow used
+## Git Workflow used
 ```
 main
  ├─ feat/cli
- |
  ├─ feat/config
- |
  ├─ feat/collect
- |
  ├─ feat/normalize
- |
  ├─ feat/store
- |
  ├─ feat/analyze
- |
  ├─ feat/gitops
- |
  └─ feat/pipeline
  ```
