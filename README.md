@@ -1,6 +1,6 @@
 # Git‑Based Log Aggregator
 
-A Git‑first, Python‑driven log aggregation and analysis tool designed to turn messy, scattered logs into versioned, auditable data—while helping you learn Git properly (branches, hooks, CI) through a real DevOps‑style project.
+A Git‑first, Python‑driven log aggregation and analysis tool designed to turn messy, scattered logs into versioned, auditable data—while helping learn Git properly (branches, hooks, CI).
 
 ## Project Goals
 
@@ -82,7 +82,7 @@ git-log-aggregator/
 ├── tests/                     
 ├── data/
 │   ├── logs/                  
-│   └── reports/               # tested result in included
+│   └── reports/               # tested result is included
 ├── config/
 │   ├── aggregator.json        
 │   └── aggregator.override.json 
@@ -96,12 +96,10 @@ git-log-aggregator/
 ```
 git clone https://github.com/<your-username>/git-log-aggregator.git
 cd git-log-aggregator
-
 ```
 
 2. Create Virtual Environment
 ```
-
 python -m venv .venv
 source .venv/Scripts/activate   # Git Bash (Windows)
 pip install -r requirements.txt
